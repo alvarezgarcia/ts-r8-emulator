@@ -1,6 +1,6 @@
 {
   "name": "ts-r8-emulator",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "An emulator for the R8 virtual CPU ",
   "main": "index.js",
   "scripts": {
