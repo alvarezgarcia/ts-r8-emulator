@@ -7,16 +7,12 @@ export const CPU = () => {
   let halt = false;
   let pc = 0;
 
-  const incrementPC = () => {
-    pc = pc + 1 & 0xffff;
-  };
-
   const setPC = (value: number) => {
     pc = value & 0xffff;
   };
 
-  const getPC = () => {
-    return pc;
+  const incrementPC = () => {
+    setPC(pc + 1);
   };
 
   const fetchAndAdvance = () => {
@@ -47,9 +43,13 @@ export const CPU = () => {
   };
 
   return {
+    get pc() {
+      return pc;
+    },
+    set pc(value: number) {
+      setPC(value);
+    },
     memory,
-    setPC,
-    getPC,
     step,
     run
   };

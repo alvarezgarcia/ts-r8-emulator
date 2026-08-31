@@ -5,7 +5,7 @@ describe("CPU", () => {
   it("initialises CPU", () => {
     const cpu = CPU();
 
-    expect(cpu.getPC()).toBe(0);
+    expect(cpu.pc).toBe(0);
     expect(cpu.memory[0]).toBe(0);
   });
 
@@ -14,13 +14,13 @@ describe("CPU", () => {
 
     cpu.memory[256] = Opcode.NOP;
     cpu.memory[257] = Opcode.NOP;
-    cpu.setPC(256);
+    cpu.pc = 256;
 
     cpu.step();
-    expect(cpu.getPC()).toBe(257);
+    expect(cpu.pc).toBe(257);
 
     cpu.step();
-    expect(cpu.getPC()).toBe(258);
+    expect(cpu.pc).toBe(258);
   });
 
   it("runs until halted", () => {
@@ -28,10 +28,10 @@ describe("CPU", () => {
 
     cpu.memory[256] = Opcode.NOP;
     cpu.memory[257] = Opcode.HALT;
-    cpu.setPC(256);
+    cpu.pc = 256;
 
     cpu.run();
 
-    expect(cpu.getPC()).toBe(258);
+    expect(cpu.pc).toBe(258);
   });
 });
