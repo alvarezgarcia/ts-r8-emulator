@@ -1,14 +1,14 @@
 {
   "name": "ts-r8-emulator",
   "version": "1.0.0",
-  "description": "",
+  "description": "An emulator for the R8 virtual CPU ",
   "main": "index.js",
   "scripts": {
     "test": "vitest"
   },
   "type": "module",
   "keywords": [],
-  "author": "",
+  "author": "Sebastián Alvarez",
   "license": "MIT",
   "devDependencies": {
     "tsx": "^4.23.13",
