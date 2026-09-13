@@ -4,6 +4,10 @@ const MEM_SIZE = 65536;
 
 export const CPU = () => {
   const memory = new Uint8Array(MEM_SIZE);
+  const regs = {
+    A: 0
+  };
+
   let halt = false;
   let pc = 0;
 
@@ -22,13 +26,20 @@ export const CPU = () => {
   };
 
   const step = () => {
+    console.log('PC', pc);
     const opcode = fetchAndAdvance();
+    console.log('OPCODE', opcode);
+    console.log('***************');
     switch (opcode) {
       case Opcode.NOP:
         break;
 
       case Opcode.HALT:
         halt = true;
+        break;
+
+      case Opcode.INC:
+        regs.A++;
         break;
 
       default:
@@ -49,8 +60,11 @@ export const CPU = () => {
     set pc(value: number) {
       setPC(value);
     },
+    get A() {
+      return regs.A;
+    },
     memory,
     step,
-    run
+    run,
   };
 };
