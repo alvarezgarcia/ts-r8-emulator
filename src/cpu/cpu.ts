@@ -1,9 +1,12 @@
 import { Opcode } from './opcodes';
+import { Memory } from '../memory';
 
-const MEM_SIZE = 65536;
+type CpuOpts = {
+  debug: boolean
+};
 
-export const CPU = () => {
-  const memory = new Uint8Array(MEM_SIZE);
+export const CPU = (opts: CpuOpts) => {
+  const memory = Memory();
   const regs = {
     A: 0
   };
@@ -19,17 +22,17 @@ export const CPU = () => {
     setPC(pc + 1);
   };
 
-  const fetchAndAdvance = () => {
-    const opcode = memory[pc];
+  const fetchByte = () => {
+    const byte = memory.read(pc);
     incrementPC();
-    return opcode;
+    return byte;
   };
 
   const step = () => {
-    console.log('PC', pc);
-    const opcode = fetchAndAdvance();
-    console.log('OPCODE', opcode);
-    console.log('***************');
+    opts.debug && console.log('PC', pc);
+    const opcode = fetchByte();
+    opts.debug && console.log('OPCODE', opcode.toString(16));
+    opts.debug && console.log('***************');
     switch (opcode) {
       case Opcode.NOP:
         break;
@@ -42,6 +45,10 @@ export const CPU = () => {
         regs.A++;
         break;
 
+      case Opcode.LD_A:
+        regs.A = fetchByte();
+        break;
+
       default:
         throw new Error(`Unknown opcode: 0x${opcode.toString(16)}`)
     }
@@ -51,6 +58,8 @@ export const CPU = () => {
     while (!halt) {
       step();
     }
+
+    opts.debug && console.log(regs);
   };
 
   return {

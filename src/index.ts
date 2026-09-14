@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import { Command } from 'commander';
 
 import pj from '../package.json';
-import { CPU, Opcode } from './cpu';
+import { CPU } from './cpu';
 
 const main = () => {
   const program = new Command();
@@ -13,19 +13,20 @@ const main = () => {
     .description('R8 CLI')
     .version(pj.version)
     .requiredOption('-r, --run <file.bin>', 'bin filepath')
+    .option('-d, --debug', 'debug', false)
 
   program.parse(process.argv);
 
-  const binFilepath = program.opts().run;
+  const {
+    run: binFilepath,
+    debug
+  } = program.opts();
+
   const binData = fs.readFileSync(binFilepath) as Uint8Array;
 
-  const cpu = CPU();
-
-  cpu.memory.set(binData);
+  const cpu = CPU({ debug });
+  cpu.memory.load(binData);
   cpu.run();
-
-  console.log(cpu.pc);
-
 };
 
 main();
