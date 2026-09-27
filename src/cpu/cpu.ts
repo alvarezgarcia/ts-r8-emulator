@@ -1,47 +1,35 @@
 import { Opcode } from './opcodes';
-import { Memory } from '../memory';
+import { CreateMemory } from '../memory';
+import { CreateRegisters } from './registers';
 
-type CpuOpts = {
-  debug: boolean
-};
+import { CpuOpts } from './types';
+import { toHex16, toHex8 } from '../utils';
 
-export const CPU = (opts: CpuOpts) => {
-  const memory = Memory();
-  const regs = {
-    A: 0
-  };
-
-  let halt = false;
-  let pc = 0;
-
-  const setPC = (value: number) => {
-    pc = value & 0xffff;
-  };
-
-  const incrementPC = () => {
-    setPC(pc + 1);
-  };
+export const CreateCPU = (
+  opts: CpuOpts = {
+    debug: false
+  }
+) => {
+  const memory = CreateMemory();
+  const regs = CreateRegisters();
 
   const fetchByte = () => {
-    const byte = memory.read(pc);
-    incrementPC();
+    const byte = memory.readByte(regs.PC);
+    regs.PC++;
     return byte;
   };
 
   const step = () => {
-    opts.debug && console.log('PC', pc);
     const opcode = fetchByte();
-    opts.debug && console.log('OPCODE', opcode.toString(16));
-    opts.debug && console.log('***************');
+    opts.debug && console.log(`| OpCode: ${toHex8(opcode)} | PC: ${toHex16(regs.PC)} | A: ${toHex8(regs.A)} |`);
     switch (opcode) {
       case Opcode.NOP:
         break;
 
       case Opcode.HALT:
-        halt = true;
-        break;
+        return false;
 
-      case Opcode.INC:
+      case Opcode.INC_A:
         regs.A++;
         break;
 
@@ -52,26 +40,21 @@ export const CPU = (opts: CpuOpts) => {
       default:
         throw new Error(`Unknown opcode: 0x${opcode.toString(16)}`)
     }
+
+
+    return true;
   };
 
   const run = () => {
-    while (!halt) {
-      step();
-    }
+    while (step()) {}
 
-    opts.debug && console.log(regs);
+    opts.debug && console.log(`| PC: ${toHex16(regs.PC)} | A: ${toHex8(regs.A)} |`);
   };
 
   return {
-    get pc() {
-      return pc;
-    },
-    set pc(value: number) {
-      setPC(value);
-    },
-    get A() {
-      return regs.A;
-    },
+    get PC() { return regs.PC; },
+    set PC(v: number) { regs.PC = v; },
+    get A() { return regs.A; },
     memory,
     step,
     run,

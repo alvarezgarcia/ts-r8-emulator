@@ -1,1 +1,1 @@
-export { Memory } from './memory';
+export { CreateMemory } from './memory';

@@ -1,2 +1,2 @@
-export { CPU } from './cpu';
+export { CreateCPU } from './cpu';
 export { Opcode } from './opcodes';
